@@ -1,0 +1,40 @@
+﻿// BoundedQueue implementada em pseudo código 
+// num hipotético dialeto de C#/Java que integrasse classes monitor com semântica Hoare
+
+monitor
+class BoundedQueue<T> {
+	private LinkedList<T> elems;
+	private int size;
+	private int capacity;
+
+	condition spaceAvailable;
+	condition elemsAvailable;
+
+	private bool isEmpty() { return size == 0; }
+
+	private bool isFull() { return size == capacity; }
+	
+	public BoundedQueue(int capacity) {
+		elems = new LinkedList<T>();
+		size = 0;
+		this.capacity = capacity;
+	}
+
+	entry 
+	T Get() {
+		if (isEmpty()) 
+			elemsAvailable.wait();
+		T e = elems.removeFirst();
+		spaceAvailable.notify();
+		return e;
+	}
+
+	entry 
+	void Put(T e) {
+		if (isFull()) 
+			spaceAvailable.wait();
+		elems.add(e);
+		elemsAvailable.notify();
+	}
+
+}
