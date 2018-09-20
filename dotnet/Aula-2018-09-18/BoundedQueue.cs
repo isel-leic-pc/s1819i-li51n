@@ -47,11 +47,11 @@ namespace Aula_2018_09_18
         {
             mutex.WaitOne(); // acquire mutex
 
-            if (IsEmpty())
+            while (IsEmpty())
             { // must wait
                 mutex.ReleaseMutex();
                 // Exacerbate vulnerability window size
-                //Thread.Sleep(10);
+                Thread.Sleep(10);
                 elemsAvailable.WaitOne();
                 mutex.WaitOne();
             }
