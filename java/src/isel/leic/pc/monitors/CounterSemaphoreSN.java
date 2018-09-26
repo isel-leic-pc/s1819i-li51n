@@ -49,7 +49,8 @@ public class CounterSemaphoreSN {
     }
 
     public boolean acquire(int n, long timeout) throws InterruptedException {
-        synchronized(monitor) {
+        monitor.lock();
+        try {
             // Here is the correct test to do.
             // On the lecture, the test for empty waiters list was forgotten,
             // which permits barging, that is, is possible that an
@@ -90,12 +91,19 @@ public class CounterSemaphoreSN {
                 throw e;
             }
         }
+        finally {
+            monitor.unlock();
+        }
     }
 
     public void release(int n) {
-        synchronized (monitor) {
+        monitor.lock();
+        try {
             permits += n;
             notifyWaiters();
+        }
+        finally {
+            monitor.unlock();
         }
     }
 
