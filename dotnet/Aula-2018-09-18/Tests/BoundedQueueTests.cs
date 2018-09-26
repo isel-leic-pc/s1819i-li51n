@@ -27,7 +27,7 @@ namespace Aula_2018_09_18.Tests {
 
                     }
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     result = false;
                 }
             };
@@ -47,7 +47,7 @@ namespace Aula_2018_09_18.Tests {
 
                     }
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     result = false;
                 }
                 finally {
@@ -100,7 +100,7 @@ namespace Aula_2018_09_18.Tests {
                         pred = val;
                     }
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     result = false;
                 }
                 finally {

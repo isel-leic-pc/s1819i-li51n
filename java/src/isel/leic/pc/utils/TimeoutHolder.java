@@ -17,4 +17,8 @@ public class TimeoutHolder {
         if (!isTimed()) return Long.MAX_VALUE;
         return Math.max(0, expired - System.currentTimeMillis());
     }
+
+    public boolean timeout() {
+        return value() == 0;
+    }
 }

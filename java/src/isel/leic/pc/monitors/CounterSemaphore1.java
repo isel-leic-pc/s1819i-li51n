@@ -1,8 +1,13 @@
+/*
+ * Simple implementation for counter semaphore.
+ * This implementation is unfair for clients with higher requests
+ * the can be starved by clients with smaller requests.
+ * Additionally, barging is present
+ */
+
 package isel.leic.pc.monitors;
 
 import isel.leic.pc.utils.TimeoutHolder;
-
-import java.sql.Timestamp;
 
 public class CounterSemaphore1 {
     private Object monitor;
@@ -23,22 +28,19 @@ public class CounterSemaphore1 {
             }
             if (timeout ==0)
                 return false;
+
             // blocking path
             TimeoutHolder th = new TimeoutHolder(timeout);
-            try {
-                do {
-                    monitor.wait(th.value());
-                    if (permits >= requests) {
-                        permits -= requests;
-                        return true;
-                    }
-                    if (th.value() == 0) return false;
+
+            do {
+                monitor.wait(th.value());
+                if (permits >= requests) {
+                    permits -= requests;
+                    return true;
                 }
-                while(true);
+                if (th.timeout()) return false;
             }
-            catch(InterruptedException e) {
-                throw e;
-            }
+            while(true);
         }
     }
 

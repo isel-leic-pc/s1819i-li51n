@@ -2,13 +2,12 @@ package isel.leic.pc.monitors;
 
 
 import isel.leic.pc.utils.TimeoutHolder;
-import org.omg.PortableInterceptor.INACTIVE;
 
-public class Semaphore {
+public class Semaphore1 {
     private Object monitor;
     private int permits;
 
-    public Semaphore(int initialPermits) {
+    public Semaphore1(int initialPermits) {
         if (initialPermits >=0)
             permits = initialPermits;
         monitor = new Object();
@@ -32,7 +31,7 @@ public class Semaphore {
                         --permits;
                         return true;
                     }
-                    if (th.value() == 0) {
+                    if (th.timeout()) {
                         return false;
                     }
                 }
