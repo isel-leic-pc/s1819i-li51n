@@ -17,6 +17,7 @@ Thumbs.db
 [Dd]ebug*/
 *.sbr
 obj/
+out/
 #Ignore files built by IntelliJ
 build
 
