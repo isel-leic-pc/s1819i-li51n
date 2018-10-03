@@ -32,7 +32,8 @@ public class CounterSemaphoreFIFO {
             // Here is the correct test to do.
             // On the lecture, the test for empty waiters list was forgotten,
             // which permits barging, that is, is possible that an
-            // acquiring passes in front of waiting threads, jeopardizing FIFO discipline!
+            // acquiring thread passes in front of waiting threads,
+            // jeopardizing FIFO discipline!
             if (permits >= n && waiters.size() == 0) {
                 permits -= n;
                 return true;
