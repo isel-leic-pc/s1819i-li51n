@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynchUtils", "SynchUtils\Sy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aula-2018-09-25", "Aula-2018-09-25\Aula-2018-09-25.csproj", "{99D3294D-A90F-40DC-8B36-4051713C555B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aula-2018-10-09", "Aula-2018-10-09\Aula-2018-10-09.csproj", "{8807CD1D-1EAB-4B04-9893-6580046C5FFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{99D3294D-A90F-40DC-8B36-4051713C555B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99D3294D-A90F-40DC-8B36-4051713C555B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99D3294D-A90F-40DC-8B36-4051713C555B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8807CD1D-1EAB-4B04-9893-6580046C5FFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8807CD1D-1EAB-4B04-9893-6580046C5FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8807CD1D-1EAB-4B04-9893-6580046C5FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8807CD1D-1EAB-4B04-9893-6580046C5FFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,32 +9,40 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class CyclicBarrier0 {
+public class CyclicBarrier2 {
     private ReentrantLock monitor;
     Condition phaseCompleted;
-
     private int participants;
     private int joined;
-    private LinkedList<Request> waiters;
+    private LinkedList<Waiter> waiters;
 
-    private static class Request {
-        private boolean granted;
+    private enum State { Closed, Broken, Opened };
+
+    private boolean broken;
+
+    private static class Waiter {
+        private State state;
+
+        private Waiter() {
+            state = State.Closed;
+        }
     }
 
-    public CyclicBarrier0(int participants) {
+    public CyclicBarrier2(int participants) {
         monitor = new ReentrantLock();
         phaseCompleted = monitor.newCondition();
         joined = 0;
         this.participants = participants;
         waiters = new LinkedList<>();
+        broken = false;
     }
 
-    private void openBarrier() {
+    private void concludePhase (State newState) {
         while(waiters.size() > 0) {
-            Request r = waiters.removeFirst();
-            r.granted = true;
+            Waiter w = waiters.removeFirst();
+            w.state = newState;
         }
-        joined = 0;
+        broken = newState == State.Broken;
         phaseCompleted.signalAll();
     }
 
@@ -44,38 +52,42 @@ public class CyclicBarrier0 {
             throws InterruptedException, TimeoutException, BrokenBarrierException {
         monitor.lock();
         try {
-
+            if (broken)
+                throw new BrokenBarrierException();
             int index = ++joined;
             if (index == participants) {
                 // last participant arrived, lets wakeup the others
-                openBarrier();
-                // the opener index is 0
+                concludePhase(State.Opened);
                 return 0;
             }
             if (timeout == 0) {
+                concludePhase(State.Broken);
                 throw new TimeoutException();
             }
             TimeoutHolder th = new TimeoutHolder(timeout);
-            Request req = new Request();
-            LinkedList.Node<Request> node = waiters.add(req);
+            Waiter w = new Waiter();
             try {
                 do {
-                    phaseCompleted.await(th.value(),
-                            TimeUnit.MILLISECONDS);
-                    if (req.granted) return index;
+                    phaseCompleted.await(th.value(), TimeUnit.MILLISECONDS);
+                    if (w.state == State.Opened) return index;
+                    if (w.state == State.Broken) {
+                        throw new BrokenBarrierException();
+                    }
                     if (th.timeout()) {
-                        waiters.remove(node);
+                        concludePhase(State.Broken);
                         throw new TimeoutException();
                     }
                 }
                 while(true);
             }
             catch(InterruptedException e) {
-                if (req.granted) {
+                if (w.state == State.Opened) {
                     Thread.currentThread().interrupt();
                     return index;
                 }
-                waiters.remove(node);
+                if (w.state == State.Closed) {
+                    concludePhase(State.Broken);
+                }
                 throw e;
             }
         }
