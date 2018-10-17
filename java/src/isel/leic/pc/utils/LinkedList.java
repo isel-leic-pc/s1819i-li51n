@@ -1,6 +1,38 @@
 package isel.leic.pc.utils;
 
-public class LinkedList<T>  {
+import java.util.Iterator;
+
+/**
+ * A double linked list with node access
+ */
+public class LinkedList<T>  implements Iterable<T> {
+
+    private class MyListIterator implements Iterator <T> {
+        Node<T> current;
+
+        MyListIterator() {
+            current = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current.next != head;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext())
+                throw new IllegalStateException();
+            Node<T> c = current;
+            current = current.next;
+            return c.value;
+        }
+    }
+
+    @Override
+    public Iterator iterator() {
+        return null;
+    }
 
     public static class Node<T> {
         public final T value;
@@ -63,5 +95,9 @@ public class LinkedList<T>  {
         if (size() == 0) throw new IllegalStateException();
         Node<T> n = head.next;
         return n.value;
+    }
+
+    public void clear() {
+        head = new Node();
     }
 }

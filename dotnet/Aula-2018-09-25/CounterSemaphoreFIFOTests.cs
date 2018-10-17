@@ -28,7 +28,7 @@ namespace Aula_2018_09_25 {
                     bool res = sem.Acquire(5, 1000);
                     result = !res;
                 }
-                catch (ThreadInterruptedException e) {
+                catch (ThreadInterruptedException) {
 
                 }
             });
