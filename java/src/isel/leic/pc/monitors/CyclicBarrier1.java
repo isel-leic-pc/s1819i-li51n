@@ -9,6 +9,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Simple CyclicBarrier that permits particpant exists
+ * Done with batch notification technique
+ */
 public class CyclicBarrier1 {
     private ReentrantLock monitor;
     private Condition phaseCompleted;

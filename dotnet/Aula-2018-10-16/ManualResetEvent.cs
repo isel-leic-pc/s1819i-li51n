@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace Aula_2018_10_16 {
   
+    /// <summary>
+    /// A manual reset vent implemented with the generation (version) concept
+    /// </summary>
     public class ManualResetEvent {
         private bool signaled;
 

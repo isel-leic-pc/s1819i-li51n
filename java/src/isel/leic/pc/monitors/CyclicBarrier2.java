@@ -9,6 +9,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * CyclicBarrier that does not permits participant exits.
+ * If someone exit, the barrier enters in a (terminal) broken state
+ * Done with execution delegation based on the waiters (participants) list.
+ */
 public class CyclicBarrier2 {
     private ReentrantLock monitor;
     Condition phaseCompleted;

@@ -24,7 +24,7 @@ namespace Aula_2018_09_25 {
         public bool Acquire(int requests, int timeout) { // throws InterruptedException  
             lock (monitor) {
                 // non blocking path
-                if (permits >= requests && waiters.Count > 0) {
+                if (permits >= requests && waiters.Count == 0) {
                     permits -= requests;
                     return true;
                 }

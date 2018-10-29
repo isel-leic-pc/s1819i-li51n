@@ -10,6 +10,12 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * CyclicBarrier that does not permits participant exits.
+ * If someone exit, the barrier enters in a (terminal) broken state.
+ * Done with batch notification technique with associated state
+ * Before the rendez-vouz an action can be atomically executed!
+ */
 public class CyclicBarrier3 {
 
     private enum State { Closed, Broken, Opened };

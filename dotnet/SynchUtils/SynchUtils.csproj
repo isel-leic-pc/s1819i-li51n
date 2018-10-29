@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Condition.cs" />
     <Compile Include="GenericBatch.cs" />
     <Compile Include="TimeoutHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
