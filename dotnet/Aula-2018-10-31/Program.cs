@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aula_2018_10_24 {
+namespace Aula_2018_10_31 {
     class Program {
         static void Main(string[] args) {
-            NoVisibility.Test();
         }
     }
 }

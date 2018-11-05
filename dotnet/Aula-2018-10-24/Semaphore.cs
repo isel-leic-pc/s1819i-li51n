@@ -13,7 +13,7 @@ namespace Aula_2018_10_24 {
     public class Semaphore {
         private Object monitor;
         private volatile int permits;
-        private int waiters;
+        private volatile int waiters;
 
         private bool TryAcquire() {
             /*
@@ -45,30 +45,31 @@ namespace Aula_2018_10_24 {
             TimeoutHolder th = new TimeoutHolder(timeout);
            
             lock (monitor) {
-                Interlocked.Increment(ref waiters);
-                if (TryAcquire()) {
-                    Interlocked.Decrement(ref waiters);
-                    return true;
-                }
-             
+                waiters++;
 
-                while (true) {
-                    try {   
+                try {
+                    if (TryAcquire()) return true;
+                          
+                    while (true) {
                         Monitor.Wait(th.Value);
                         if (TryAcquire()) {
-                            Interlocked.Decrement(ref waiters);
+                             
                             return true;
                         }
                         if (th.Timeout) {
-                            Interlocked.Decrement(ref waiters);  return false;
+                             return false;
                         }
                     }
-                    catch(ThreadInterruptedException) {
-                        Interlocked.Decrement(ref waiters);
-                        Monitor.Pulse(monitor);
-                        throw;
-                    }
                 }
+                catch(ThreadInterruptedException) {
+                    if (permits > 0)
+                        Monitor.Pulse(monitor);
+                    throw;
+                }
+                finally {
+                    waiters--;
+                }
+                
             }   
         }
 
