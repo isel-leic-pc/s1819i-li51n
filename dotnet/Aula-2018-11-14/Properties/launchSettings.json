@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Aula-2018-11-14": {
+      "commandName": "Project",
+      "commandLineArgs": "-t:100 -b"
+    }
+  }
+}
