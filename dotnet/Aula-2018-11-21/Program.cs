@@ -119,9 +119,9 @@ namespace Aula_2018_11_21
         public static void Main(String[] args) {
             //TestTPL0();
 
-            TestCountPrimes();
+            //TestCountPrimes();
 
-            Console.WriteLine();
+            //Console.WriteLine();
             TestGetPrimes();
 
             WorkerThreadReport.ShutdownWorkerThreadReport();

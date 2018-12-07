@@ -14,20 +14,20 @@ namespace Aula_2018_11_21 {
             //Console.WriteLine("IsPrime thread:  {0}, fromThreadPool={1}",
             //    Thread.CurrentThread.ManagedThreadId,
             //    Thread.CurrentThread.IsThreadPoolThread);
- 
+           
             if (n == 2) return true;
             if (n < 2 || n % 2 == 0) return false;
             for (int i = 3; i <= Math.Sqrt(n); i += 2)
                 if (n % i == 0) return false;
             return true;
+             
             /*
-            Thread.SpinWait(500);
+            Thread.SpinWait(100);
             return true;
             */
+           
             
         }
-
-
 
         public static IEnumerable<long> GetPrimes(long[] vals, int size) {
             LinkedList<long> primes = new LinkedList<long>();
@@ -73,7 +73,6 @@ namespace Aula_2018_11_21 {
                     if (IsPrime(val))
                         lock (primes) { primes.AddLast(val); }
                 }, vals[i]);
-
 
                 tasks.Add(t);
             }

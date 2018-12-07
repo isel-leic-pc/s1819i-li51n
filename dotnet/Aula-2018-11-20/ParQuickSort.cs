@@ -90,7 +90,6 @@ namespace Aula_2018_11_20 {
                     ++i;
                     --j;
                 }
-
             }
 
             return i - 1;
