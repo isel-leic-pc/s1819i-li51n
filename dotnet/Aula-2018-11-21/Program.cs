@@ -21,7 +21,7 @@ namespace Aula_2018_11_21
 
                 // test throwing an exception
                 
-                throw new InvalidOperationException("Artificially generated exception in TestTPL0!");
+                // throw new InvalidOperationException("Artificially generated exception in TestTPL0!");
                 return 10;
             });
 

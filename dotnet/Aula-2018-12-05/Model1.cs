@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ShowImages {
@@ -59,7 +57,7 @@ namespace ShowImages {
         /// An asynchronous iterator is an iterator that returns an enumeration of tasks. Note 
         /// that, courtesy of yield return and yield break, we can write 
         /// a code very similarly to a synchronous implementation. 
-        /// But we must a runner (enumerator) of this iterator as showed in the next method.
+        /// But we must use a runner (async enumerator) of this iterator as showed in the next method.
         /// </summary>
         /// <param name="src"></param>
         /// <returns></returns>
@@ -122,8 +120,7 @@ namespace ShowImages {
             Task <Stream> ts;
             yield return ts = client.GetStreamAsync(url);
 
-            Task tc;
-            yield return tc= ts.Result.CopyToAsync(ms);
+            yield return  ts.Result.CopyToAsync(ms);
              
             yield return Task.FromResult(Image.FromStream(ms));  
         }
@@ -139,7 +136,7 @@ namespace ShowImages {
 
         /// <summary>
         /// An alternative using async/await.
-        /// To be presented in next lecture (11/4/2018)
+        /// To be presented in next lecture (11/12/2018)
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -149,7 +146,7 @@ namespace ShowImages {
             Stream s = await client.GetStreamAsync(url);
             Stream ms = new MemoryStream();
             await s.CopyToAsync(ms);
-                
+             
             return Image.FromStream(ms); 
         }
 

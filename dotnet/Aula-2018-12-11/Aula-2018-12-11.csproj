@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{892441A9-8E64-465D-B7F3-60C622E49959}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>AsyncUtils</RootNamespace>
-    <AssemblyName>AsyncUtils</AssemblyName>
+    <ProjectGuid>{F44C8373-31F8-4CE6-B8DD-56BED6989A16}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Aula_2018_12_11</RootNamespace>
+    <AssemblyName>Aula-2018-12-11</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,9 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,10 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncEnumerator.cs" />
+    <Compile Include="AwaiterTest.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskCombinators.cs" />
-    <Compile Include="TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

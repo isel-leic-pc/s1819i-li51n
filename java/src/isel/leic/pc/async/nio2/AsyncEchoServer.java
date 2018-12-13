@@ -76,8 +76,6 @@ public class AsyncEchoServer {
     public static void main(String[] args) {
         final int port = 8081;
 
-
-        AtomicInteger sessionId = new AtomicInteger();
         try {
             AsynchronousServerSocketChannel serverSock =
                     AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(port));
@@ -91,7 +89,7 @@ public class AsyncEchoServer {
                     System.out.println("Connection created with id "+ attachment);
                     handle(result, attachment);
                     // start a new accept in order to enable concurrent sessions
-                    serverSock.accept(sessionId.incrementAndGet(), cb[0]);
+                    serverSock.accept(attachment+1, cb[0]);
                 }
 
                 @Override
@@ -101,7 +99,7 @@ public class AsyncEchoServer {
             };
 
             // start a first accept
-            serverSock.accept(sessionId.incrementAndGet(), cb[0]);
+            serverSock.accept(1, cb[0]);
             System.in.read();
             return;
 
