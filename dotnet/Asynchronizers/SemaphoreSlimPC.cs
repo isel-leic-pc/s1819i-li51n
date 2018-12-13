@@ -17,38 +17,30 @@ namespace Asynchronizers {
         private object monitor;
         private LinkedList<Request> requests;   // the asynchronous pending requests
         private class Request : TaskCompletionSource<bool> {
-            internal CancellationToken token;
             internal Timer timer;
             internal SemaphoreSlimPC sem;
-            internal LinkedListNode<Request> node;
-            internal int timeout;
+            internal CancellationTokenRegistration cancelRegist;
+            internal CancellationToken token;
 
-            /// The request nodes are augmented promises (TaskCompletionSource) 
-            /// with additional state. They are created with a creation option
-            /// that forbids synchronous continuations!
-            /// </summary>
-            internal Request(SemaphoreSlimPC sem, CancellationToken token, int timeout) 
-                : base(TaskCreationOptions.RunContinuationsAsynchronously) {
-                this.token = token;
+            internal Request(SemaphoreSlimPC sem) :
+                base(TaskCreationOptions.RunContinuationsAsynchronously){
                 this.sem = sem;
-                this.timeout = timeout;
             }
- 
-            internal Task<bool> Start(LinkedListNode<Request> node) {
-                this.node = node; // the node is saved for efficient remotion 
 
-                // Create a timer if timeout is not infinite
-                if (timeout != Timeout.Infinite) {
-                    timer = new Timer((o) => sem.TimeoutCallback(node));
-                    timer.Change(timeout, Timeout.Infinite);
-                }
+            internal Task<bool> Start(LinkedListNode<Request> node, CancellationToken token, int timeout) {
+                this.token = token;
 
-                // register a cancellation callback if the token is cancellable, i.e., is not
-                // CancellationToken.None
+                // register a cancellation callback if the token is cancellable, i.e., is not CancellationToken.None
                 if (token.CanBeCanceled)
                     // Note that if the token is already cancelled, the callback is called synchronously!
-                    token.Register(() => sem.CancellationCallback(node));
-              
+                    cancelRegist = token.Register(() => sem.CancellationCallback(node));
+
+                // Create a timer if timeout is not infinite 
+                // and the task can be already completed due to a premature cancellation
+                if (timeout != Timeout.Infinite && !Task.IsCompleted)  
+                    timer = new Timer((o) => sem.TimeoutCallback(node), null, timeout, Timeout.Infinite);
+
+                // return the promise associated task
                 return Task;
             }
         }
@@ -69,7 +61,7 @@ namespace Asynchronizers {
         private void CancellationCallback(LinkedListNode<Request> node) {
             Request r = node.Value;
             if (r.TrySetCanceled()) {
-                r.timer.Dispose();
+                r.timer?.Dispose();
                 lock (monitor) requests.Remove(node);
             }
         }
@@ -81,6 +73,7 @@ namespace Asynchronizers {
         private void TimeoutCallback(LinkedListNode<Request> node) {
             Request r = node.Value;
             if (r.TrySetResult(false)) {
+                if (r.token.CanBeCanceled) r.cancelRegist.Dispose();
                 lock (monitor) requests.Remove(node);
             }
                 
@@ -109,10 +102,10 @@ namespace Asynchronizers {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled<bool>(token);
 
-                r = new Request(this, token, timeout);
+                r = new Request(this);
                 node = requests.AddLast(r);
                
-                return r.Start(node);
+                return r.Start(node, token, timeout);
             }
            
         }
@@ -143,8 +136,8 @@ namespace Asynchronizers {
             lock (monitor) {
                 permits += units;
 
-                if (permits > maxPermits)
-                    throw new InvalidOperationException();
+                //if (permits > maxPermits)
+                //    throw new InvalidOperationException();
 
                 LinkedListNode<Request> node = requests.First;
                 
@@ -157,6 +150,7 @@ namespace Asynchronizers {
                         permits--;
                         requests.Remove(current);
                         r.timer.Dispose();
+                        if (r.token.CanBeCanceled) r.cancelRegist.Dispose();
                     } 
                 }        
             }

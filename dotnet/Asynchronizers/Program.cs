@@ -43,7 +43,7 @@ namespace Asynchronizers {
             int sharedCounter = 0;
             bool exit = false;
             ManualResetEventSlim start = new ManualResetEventSlim();
-            SemaphoreSlimPC1 _lock = new SemaphoreSlimPC1(1, 1);
+            SemaphoreSlimPC _lock = new SemaphoreSlimPC(1, 1);
 
             /**
              * Create and start acquirer/releaser threads
@@ -59,7 +59,6 @@ namespace Asynchronizers {
                     do {
                         do {
                             try {
-
                                 if (_lock.Acquire(timeout: rnd.Next(MIN_TIMEOUT, MAX_TIMEOUT), token: cts.Token))
                                     break;
                                 timeouts[tid]++;
@@ -138,9 +137,9 @@ namespace Asynchronizers {
                     break;
                 }
 #if RUN_CONTINOUSLY
-		} while (true);
+            } while (true);
 #else
-            } while (Environment.TickCount < endTime);
+		} while (Environment.TickCount < endTime);
 #endif
             Volatile.Write(ref exit, true);
             sw.Stop();
@@ -194,7 +193,7 @@ namespace Asynchronizers {
             int[] cancellations = new int[TASKS];
             int sharedCounter = 0;
             bool exit = false;
-            SemaphoreSlimPC1 _lock = new SemaphoreSlimPC1(1, 1);
+            SemaphoreSlimPC _lock = new SemaphoreSlimPC(1, 1);
 
             //
             // Create and start acquirer/releaser threads
@@ -252,9 +251,9 @@ namespace Asynchronizers {
                     break;
                 }
 #if RUN_CONTINOUSLY
-		} while (true);
+            } while (true);
 #else
-            } while (Environment.TickCount < endTime);
+		} while (Environment.TickCount < endTime);
 #endif
 
             Volatile.Write(ref exit, true);
@@ -411,13 +410,12 @@ namespace Asynchronizers {
                 Thread.Sleep(50);
                 if (Console.KeyAvailable) {
                     Console.Read();
-
                     break;
                 }
 #if RUN_CONTINOUSLY
-		} while (true);
+            } while (true);
 #else
-            } while (Environment.TickCount < endTime);
+		} while (Environment.TickCount < endTime);
 #endif
             Volatile.Write(ref exit, true);
             Thread.Sleep(EXIT_TIME);
@@ -433,17 +431,14 @@ namespace Asynchronizers {
 
             int sumConsumptions = 0;
             // Wait until all consumer have been terminated.
-            /*
             for (int i = 0; i < CONSUMER_THREADS; i++) {
                 if (cthrs[i].IsAlive) {
-                    //cthrs[i].Interrupt();
-                    cthrs[i].Join();
-                    break;
+                    cthrs[i].Interrupt();
                 }
-               
+                cthrs[i].Join();
                 sumConsumptions += consumptions[i];
             }
-            */
+
             // Display consumer results
             Console.WriteLine("\nConsumer counters:");
             for (int i = 0; i < CONSUMER_THREADS; i++) {
@@ -480,8 +475,8 @@ namespace Asynchronizers {
 
             const int RUN_TIME = 30 * 1000;
             const int EXIT_TIME = 50;
-            const int PRODUCER_THREADS = 1; // 10;
-            const int CONSUMER_THREADS = 1; // 20;
+            const int PRODUCER_THREADS = 10;
+            const int CONSUMER_THREADS = 20;
             const int QUEUE_SIZE = PRODUCER_THREADS / 2 + 1;
             const int MIN_TIMEOUT = 1;
             const int MAX_TIMEOUT = 50;
@@ -602,9 +597,9 @@ namespace Asynchronizers {
                     break;
                 }
 #if RUN_CONTINOUSLY
-        } while (true);
+            } while (true);
 #else
-            } while (Environment.TickCount < endTime);
+		} while (Environment.TickCount < endTime);
 #endif
             Volatile.Write(ref exit, true);
             Thread.Sleep(EXIT_TIME);
@@ -655,29 +650,31 @@ namespace Asynchronizers {
         static void Main() {
 
 #if AS_LOCK_SYNCH
-		Console.WriteLine("\n-->test semaphore as lock using synchronous acquires: {0}",
-							  TestSemaphoreAsLockSync() ? "passed" : "failed");
+            Console.WriteLine("\n-->test semaphore as lock using synchronous acquires: {0}",
+                                  TestSemaphoreAsLockSync() ? "passed" : "failed");
 #endif
 
 #if AS_LOCK_ASYNC
-		
-		Console.WriteLine("\n-->test semaphore as lock using asynchronous acquires: {0}",
-							  TestSemaphoreAsLockAsync() ? "passed" : "failed");
+
+            Console.WriteLine("\n-->test semaphore as lock using asynchronous acquires: {0}",
+                                  TestSemaphoreAsLockAsync() ? "passed" : "failed");
 #endif
 
 #if ON_PRODUCER_CONSUMER_SYNC
-		
-		Console.WriteLine("\n-->test semaphore in a synchronous producer/consumer context: {0}",
-						  TestSemaphoreInATapProducerConsumerContextSync() ? "passed" : "failed");
+
+            Console.WriteLine("\n-->test semaphore in a synchronous producer/consumer context: {0}",
+                              TestSemaphoreInATapProducerConsumerContextSync() ? "passed" : "failed");
 #endif
 
 #if ON_PRODUCER_CONSUMER_ASYNC
 
-
             Console.WriteLine("\n-->test semaphore in a asynchronous producer/consumer context: {0}",
-						  TestSemaphoreInATapProducerConsumerContextAsync() ? "passed" : "failed");
+                              TestSemaphoreInATapProducerConsumerContextAsync() ? "passed" : "failed");
 #endif
         }
     }
+
+
+
 }
 
