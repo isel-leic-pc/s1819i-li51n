@@ -26,14 +26,14 @@ namespace Asynchronizers {
             internal SemaphoreSlimPC1 sem;
             internal CancellationTokenRegistration cancelRegist;
             internal CancellationToken token;
-            internal LinkedListNode<Request> node;
+          
             internal Request(SemaphoreSlimPC1 sem) {
                 this.sem = sem;  
             }
 
             internal Task<bool> Start(LinkedListNode<Request> node, CancellationToken token, int timeout) {
                 this.token = token;
-                this.node = node;
+             
                 // register a cancellation callback if the token is cancellable, i.e., is not CancellationToken.None
                 if (token.CanBeCanceled)
                     // Note that if the token is already cancelled, the callback is called synchronously!
@@ -144,31 +144,6 @@ namespace Asynchronizers {
         }
 
 
-        // Try to cancel an asynchronous request identified by its task
-        public bool TryCancelAcquire(Task<bool> requestTask) {
-            Request request = null;
-            lock (monitor) {
-                foreach (Request req in requests) {
-                    if (req.Task == requestTask) {
-                        request = req;
-
-                        requests.Remove(req);
-
-                        break;
-                    }
-                }
-            }
-            if (request != null) {
-                request.timer?.Dispose();
-                if (request.token.CanBeCanceled) {
-                    request.SetCanceled();
-                    return true;
-                }
-            }
-            return false;
-        }
-
-
         /// <summary>
         /// Synchronous acquire version. 
         /// Is done invoking the asynchronous version and immediately waiting on that one
@@ -180,23 +155,6 @@ namespace Asynchronizers {
             Task<bool> waitTask = AcquireAsync(token, timeout);
             try {
                 return waitTask.Result;
-            }
-            catch (ThreadInterruptedException) {
-                // Try to cancel the asynchronous request
-                if (TryCancelAcquire(waitTask))
-                    throw;
-                // The request was already completed or cancelled, return the
-                // underlying result
-                try {
-                    return waitTask.Result;
-                }
-                catch (AggregateException ae) {
-                    throw ae.InnerException;
-                }
-                finally {
-                    // Anyway re-assert the interrupt
-                    Thread.CurrentThread.Interrupt();
-                }
             }
             catch (AggregateException ae) {
                 throw ae.InnerException;

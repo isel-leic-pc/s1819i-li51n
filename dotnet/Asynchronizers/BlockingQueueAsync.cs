@@ -12,7 +12,7 @@ namespace Asynchronizers {
     internal class BlockingQueueAsync<T> where T : class {
         private readonly int capacity;
         private readonly T[] room;
-        private readonly SemaphoreSlimPC freeSlots, filledSlots;
+        private readonly SemaphoreSlimPC1 freeSlots, filledSlots;
         private int putIdx, takeIdx;
 
         // construct the blocking queue
@@ -20,8 +20,8 @@ namespace Asynchronizers {
             this.capacity = capacity;
             this.room = new T[capacity];
             this.putIdx = this.takeIdx = 0;
-            this.freeSlots = new SemaphoreSlimPC(capacity, capacity);
-            this.filledSlots = new SemaphoreSlimPC(0, capacity);
+            this.freeSlots = new SemaphoreSlimPC1(capacity, capacity);
+            this.filledSlots = new SemaphoreSlimPC1(0, capacity);
         }
 
         // Put an item in the queue asynchronously enabling timeout and cancellation
