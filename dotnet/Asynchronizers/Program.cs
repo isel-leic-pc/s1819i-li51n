@@ -43,7 +43,7 @@ namespace Asynchronizers {
             int sharedCounter = 0;
             bool exit = false;
             ManualResetEventSlim start = new ManualResetEventSlim();
-            SemaphoreSlimPC1 _lock = new SemaphoreSlimPC1(1, 1);
+            SemaphoreSlim1 _lock = new SemaphoreSlim1(1, 1);
 
             /**
              * Create and start acquirer/releaser threads
@@ -193,7 +193,7 @@ namespace Asynchronizers {
             int[] cancellations = new int[TASKS];
             int sharedCounter = 0;
             bool exit = false;
-            SemaphoreSlimPC1 _lock = new SemaphoreSlimPC1(1, 1);
+            SemaphoreSlim1 _lock = new SemaphoreSlim1(1, 1);
 
             //
             // Create and start acquirer/releaser threads

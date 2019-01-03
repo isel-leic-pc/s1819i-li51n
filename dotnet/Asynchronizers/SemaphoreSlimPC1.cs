@@ -11,7 +11,7 @@ namespace Asynchronizers {
     /// A semaphore with async acquire operation.
     /// This version can be reentered by synchronous continuations without any problem.
     /// </summary>
-    class SemaphoreSlimPC1 {
+    class SemaphoreSlim1 {
         private readonly int maxPermits;
         private int permits;
         private object monitor;
@@ -23,11 +23,11 @@ namespace Asynchronizers {
         /// </summary>
         private class Request : TaskCompletionSource<bool> {
             internal Timer timer;
-            internal SemaphoreSlimPC1 sem;
+            internal SemaphoreSlim1 sem;
             internal CancellationTokenRegistration cancelRegist;
             internal CancellationToken token;
           
-            internal Request(SemaphoreSlimPC1 sem) {
+            internal Request(SemaphoreSlim1 sem) {
                 this.sem = sem;  
             }
 
@@ -49,7 +49,7 @@ namespace Asynchronizers {
             }
         }
 
-        public SemaphoreSlimPC1(int initial, int maxPermits) {
+        public SemaphoreSlim1(int initial, int maxPermits) {
             permits = initial;
             this.maxPermits = maxPermits;
             requests = new LinkedList<Request>();
@@ -70,8 +70,6 @@ namespace Asynchronizers {
                     // ok, "terminate" the node, then
                     r = node.Value;
                     requests.Remove(node);  // first remove the node   
-                  
-                   
                 }
                
             }
@@ -97,18 +95,13 @@ namespace Asynchronizers {
                     // ok, "terminate" the node, then
                     r = node.Value;
                     requests.Remove(node);  // remove the node 
-                  
-                   
                 }
-               
             }
             if (r!= null) {
                 if (r.token.CanBeCanceled)
                     r.cancelRegist.Dispose();
                 r.SetResult(false);     // force final task state outside the lock 
             }
-          
-
         }
 
         /// <summary>
