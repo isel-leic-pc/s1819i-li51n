@@ -51,7 +51,6 @@
     <Compile Include="PC17-18v1.cs" />
     <Compile Include="PC17-18v2.cs" />
     <Compile Include="PC18-19i1.cs" />
-    <Compile Include="PG17-18i1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
